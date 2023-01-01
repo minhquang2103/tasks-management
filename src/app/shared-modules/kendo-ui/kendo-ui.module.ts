@@ -1,9 +1,10 @@
 
 import { NgModule } from '@angular/core';
-import { WindowModule } from '@progress/kendo-angular-dialog';
+import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 
 
 const kendoUIModules = [
+  DialogModule,
   WindowModule
 ];
 

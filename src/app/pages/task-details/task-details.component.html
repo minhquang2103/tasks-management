@@ -1,6 +1,6 @@
-<form #form
+<form #form="ngForm"
       (ngSubmit)="save(form)">
-    <div class="mb-3">
+    <div class="col-md-6 mb-3">
         <label for="id"
                class="form-label">Id</label>
         <input [disabled]="true"
@@ -12,21 +12,38 @@
                id="id">
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-6 mb-3">
         <label for="completed"
                class="form-label">Completed</label>
         <div>
-            {{dataSource.completed | completeStatus}}
+            <select [(ngModel)]="dataSource.completed"
+                    [ngClass]="{'is-invalid': completed.errors?.required && (completed.dirty || completed.touched || isSubmitted)}"
+                    [required]="true"
+                    #completed="ngModel"
+                    name="completed"
+                    id="completed"
+                    class="form-select">
+                <ng-container>
+                    <option [value]="null">Choose...</option>
+                    <option [value]="true">YES</option>
+                    <option [value]="false">NO</option>
+                </ng-container>
+
+            </select>
         </div>
     </div>
 
-    <div class="mb-3">
-        <label for="assigneeId"
+    <div class="col-md-6 mb-3">
+        <label #labelAssignedTo
+               for="assigneeId"
                class="form-label">Assigned To</label>
         <div>
             <select [(ngModel)]="dataSource.assigneeId"
+                    [ngClass]="{'is-invalid': assigneeId.errors?.required && (assigneeId.dirty || assigneeId.touched || isSubmitted)}"
+                    [required]="true"
                     #assigneeId="ngModel"
                     name="assigneeId"
+                    id="assigneeId"
                     class="form-select">
                 <ng-container *ngFor="let data of users$ | async">
                     <option [value]="data.id">
@@ -39,7 +56,7 @@
         </div>
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-12 mb-3">
         <label for="description"
                class="form-label">Description</label>
         <textarea [(ngModel)]="dataSource.description"
@@ -49,13 +66,14 @@
                   name="description"
                   class="form-control"
                   id="description"
-                  rows="3"></textarea>
+                  rows="4"></textarea>
     </div>
 
     <div class="btn-group"
          role="group"
          aria-label="Action Buttons">
-        <button (click)="back()"
+        <button *ngIf="isShowBackToList"
+                (click)="back()"
                 type="button"
                 class="btn btn-outline-info btn-sm">Back To List</button>
         <button type="submit"

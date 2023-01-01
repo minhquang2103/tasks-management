@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, combineLatest, Observable, of, throwError } from "rxjs";
 import { delay, map } from "rxjs/operators";
+import { TaskFilter } from "../models/filters";
 import { Task, TaskList } from "../models/task";
 import { User } from "../models/user";
 
@@ -14,7 +15,8 @@ function randomDelay() {
 })
 export class BackendService {
 
-  lastId: number = 1;
+  lastId: number = 2;
+  taskFilter: TaskFilter = new TaskFilter();
   storedTasks: Task[] = [
     {
       id: 0,
@@ -35,22 +37,47 @@ export class BackendService {
       completed: true
     }
   ];
+  storedUsers: User[] = [
+    { id: 0, name: "Mike" },
+    { id: 1, name: "James" },
+    { id: 2, name: "Viktor" }
+  ];
 
   constructor() {
 
   }
 
   private storedTasks$ = new BehaviorSubject<Task[]>(this.storedTasks);
-
   tasks$(): Observable<Task[]> {
-    return this.storedTasks$.asObservable().pipe(delay(randomDelay()));
+    return combineLatest([
+      this.storedTasks$.asObservable(),
+      this.filters$()
+    ]).pipe(
+      map(([tasks, filter]) => {
+        let result: Task[] = tasks || [];
+        result = this.filterTask(result, filter);
+        return result
+      }),
+      delay(randomDelay())
+    )
   }
 
-  storedUsers: User[] = [
-    { id: 0, name: "Mike" },
-    { id: 1, name: "James" },
-    { id: 2, name: "Viktor" }
-  ];
+  private filterTask(value: Task[], filter: TaskFilter): Task[] {
+    return value.filter(task => {
+      return (
+        task.description.toUpperCase().indexOf(filter.searchString.toUpperCase()) > -1 && (filter.completed !== null ? filter.completed === task.completed : task)
+      );
+    });
+  }
+
+  private taskFilter$ = new BehaviorSubject<TaskFilter>(this.taskFilter);
+  filters$(): Observable<TaskFilter> {
+    return this.taskFilter$.asObservable().pipe(delay(randomDelay()))
+  }
+
+  setFilters(value: TaskFilter) {
+    this.taskFilter$.next(value)
+  }
 
   private findTaskById = (id: number) =>
     this.storedTasks.find(task => task.id === +id);
@@ -59,10 +86,9 @@ export class BackendService {
 
   getRandomDescription(): string {
     const rand: string[] = [
-      "Clean the board every morning at 8AM.", 
-      "Shut the machine when you're back home.", 
-      "Improve the list detail page.", 
-      "Implement the bank entry screen"
+      "Clean the board every morning at 8AM.",
+      "Shut the machine when you're back home.",
+      "Turn-off the AC before leaving.",
     ];
     return rand[Math.floor(Math.random() * rand.length)];
   }
@@ -79,46 +105,29 @@ export class BackendService {
     return of(this.findUserById(id)).pipe(delay(randomDelay()));
   }
 
-  newTask$(payload: { description: string }): Observable<Task> {
-    const newTask: Task = {
+  newTask$(newTask: Task): Observable<Task> {
+    this.storedTasks = this.storedTasks.concat(newTask);
+    this.storedTasks$.next(this.storedTasks);
+    return of(newTask).pipe(delay(randomDelay()));
+  }
+
+  getNewTask$(payload: { description: string }) {
+    return of({
       id: ++this.lastId,
       description: payload.description,
       assigneeId: null,
       completed: false
-    };
-
-    this.storedTasks = this.storedTasks.concat(newTask);
-    this.storedTasks$.next(this.storedTasks);
-
-    return of(newTask).pipe(delay(randomDelay()));
+    })
   }
 
-  /**
-   * 
-   * @param taskId 
-   * @param userId 
-   * @returns updated task
-   */
   assignTask$(taskId: number, userId: number): Observable<Task> {
     return this.updateTask$(taskId, { assigneeId: userId });
   }
 
-  /**
-   * 
-   * @param taskId 
-   * @param userId 
-   * @returns updated task
-   */
   completeTask$(taskId: number, completed: boolean): Observable<Task> {
     return this.updateTask$(taskId, { completed });
   }
 
-  /**
-   * 
-   * @param taskId 
-   * @param userId 
-   * @returns updated task
-   */
   updateTask$(taskId: number, updates: Partial<Omit<Task, "id">>): Observable<Task> {
     const foundTask = this.findTaskById(taskId);
 

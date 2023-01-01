@@ -8,7 +8,12 @@
         </router-outlet>
     </div>
 
-    <div #container
-         class="popup">
+    <div *ngIf="isOverlay" class="k-overlay">
+
+    </div>
+
+    <div class="popup">
+        <div kendoWindowContainer></div>
+        <ng-container #container></ng-container>
     </div>
 </div>

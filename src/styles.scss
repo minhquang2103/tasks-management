@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-//@import "assets/scss/variables.scss";
 @import "assets/scss/global.scss";
+@import "assets/scss/variables.scss";
 
-//$primary: $main-yellow;
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+@import "~@progress/kendo-theme-bootstrap/dist/all.scss";
+@import "~bootstrap/scss/bootstrap.scss";

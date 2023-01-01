@@ -7,9 +7,8 @@ export class DefaultFilter {
 }
 
 export class TaskFilter extends DefaultFilter {
-    id: number;
-    completed: boolean;
-    assigneeId: number;
+    searchString: string = "";
+    completed: boolean = null;
     constructor() {
         super()
     }

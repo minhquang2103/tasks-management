@@ -8,7 +8,11 @@ import { WindowContainer } from './core/utilities/util';
 })
 export class AppComponent implements OnInit {
   @ViewChild('container', { static: true, read: ViewContainerRef }) container: ViewContainerRef;
-  
+
+  get isOverlay(): boolean {
+    return this.container.length > 0
+  }
+
   constructor() {
 
   }

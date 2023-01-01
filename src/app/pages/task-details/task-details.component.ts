@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WindowRef } from '@progress/kendo-angular-dialog';
@@ -24,15 +24,24 @@ import { BackendService } from 'src/app/core/services/backend.service';
 export class TaskDetailsComponent extends BaseDetailComponent implements OnInit {
   assignee: User;
   users$ = this.backEndService.users$();
-
   dataSource: Task = new Task();
+
+  //not sure why inject in the constructor not working as expected, this is a workaround
+  windowRef: WindowRef = null; 
+
+  get isShowBackToList(): boolean {
+    return !this.windowRef
+  }
+
   @Input() configs: TaskDetailConfigs = new TaskDetailConfigs();
+  @ViewChild('labelAssignedTo', { static: true, read: ElementRef }) labelAssignedTo: ElementRef<HTMLLabelElement>;
+
   constructor(
     private backEndService: BackendService,
     private activatedRoute: ActivatedRoute,
-    private windowRef: WindowRef,
     private formatRequestService: FormatRequestService,
-    private router: Router
+    private router: Router,
+    // private windowRef: WindowRef
   ) {
     super()
   }
@@ -51,12 +60,16 @@ export class TaskDetailsComponent extends BaseDetailComponent implements OnInit 
     if (!id) {
       this.get(this.configs.id)
     }
+    //this element haven't been rendered in DOM yet
+    setTimeout(() => {
+      this.labelAssignedTo.nativeElement.click()
+    }, 20)
   }
 
   get(id: number) {
     const get$ = () => {
       if (isNumber(id)) return this.backEndService.taskById$(id)
-      return this.backEndService.newTask$({ description: this.backEndService.getRandomDescription() })
+      return this.backEndService.getNewTask$({ description: this.backEndService.getRandomDescription() })
     }
     get$().pipe(
       concatMap(res => {
@@ -68,26 +81,33 @@ export class TaskDetailsComponent extends BaseDetailComponent implements OnInit 
   }
 
   save(form: NgForm) {
+    this.isSubmitted = true;
     if (form.invalid) {
       console.log("Form is invalid");
       return
     }
     let body: Task = cloneDeep(this.dataSource);
-    body = this.formatRequestService.formatRequest("PUT", body);
-
+    this.beforeSubmit(body);
+    if (this.configs.type === PageType.ADD) {
+      this.backEndService.newTask$(body).pipe(
+        tap(res => this.windowRef.close(res))
+      ).subscribe()
+      return
+    }
     this.backEndService.updateTask$(body.id, body).pipe(
       tap(res => {
-        this.emit(res);
+        this.back();
+        if (this.windowRef) {
+          this.windowRef.close(res);
+        }
       })
     ).subscribe()
   }
 
-  emit(value: Task) {
-    this.back();
-    if (this.windowRef) {
-      // this.windowRef.close(value);
-    }
-  } 
+  private beforeSubmit(body: Task) {
+    body.assigneeId = +body.assigneeId;
+    this.formatRequestService.formatRequest("PUT", body);
+  }
 
   back() {
     this.router.navigate(["list"])

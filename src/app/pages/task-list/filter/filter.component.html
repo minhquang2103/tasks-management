@@ -1,1 +1,27 @@
-<p>filter works!</p>
+<form #form="ngForm"
+      class="row mb-3">
+    <div class="col-md-6">
+        <label for="searchString"
+               class="form-label">Search</label>
+        <input [(ngModel)]="defaultFilter && defaultFilter.searchString"
+               name="searchString"
+               #searchString="ngModel"
+               placeholder="Description..."
+               type="text"
+               class="form-control"
+               id="searchString">
+    </div>
+    <div class="col-md-3">
+        <label for="completed"
+               class="form-label">Completed</label>
+        <select [(ngModel)]="defaultFilter && defaultFilter.completed"
+                name="completed"
+                #completed="ngModel"
+                id="completed"
+                class="form-select">
+            <option [value]="null">Choose...</option>
+            <option [value]="true">YES</option>
+            <option [value]="false">NO</option>
+        </select>
+    </div>
+</form>

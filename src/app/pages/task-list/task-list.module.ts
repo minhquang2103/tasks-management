@@ -5,6 +5,7 @@ import { TaskListRoutingModule } from './task-list-routing.module';
 import { TaskDetailsModule } from '../task-details/task-details.module';
 import { FilterComponent } from './filter/filter.component';
 import { CompleteStatusModule } from 'src/app/core/pipes/complete-status/complete-status.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -17,7 +18,8 @@ import { CompleteStatusModule } from 'src/app/core/pipes/complete-status/complet
     CommonModule,
     TaskListRoutingModule,
     TaskDetailsModule,
-    CompleteStatusModule
+    CompleteStatusModule,
+    FormsModule
   ]
 })
 export class TaskListModule { }
