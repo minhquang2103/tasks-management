@@ -3,5 +3,5 @@ Just a repo to demonstrate the structures, building features and coding styles f
 https://github.com/CSVentures/csv-coding-assignment-angular
 
 
-# Reminder
+# Note
 I have little knowledge about State Management at this state.
