@@ -65,3 +65,5 @@ import 'zone.js';  // Included with Angular CLI.
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
  */
 // import 'intl';  // Run `npm install --save intl`.
+
+(window as any).process = { env: { DEBUG: undefined } };

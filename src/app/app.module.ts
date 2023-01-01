@@ -1,16 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import {BackendService} from './backend.service';
+import { LayoutModule } from './layout/layout.module';
+import { AppRoutingModule } from './app-routing.module';
+import { KendoUiModule } from './shared-modules/kendo-ui/kendo-ui.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule,
+    LayoutModule,
+    KendoUiModule
   ],
-  providers: [BackendService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

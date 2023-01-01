@@ -1,0 +1,45 @@
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th>
+                Assignee
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Completed
+            </th>
+            <th class="action">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let task of dataSource; let i = index">
+            <td>
+                {{task.id}}
+            </td>
+            <td>
+                {{task.assigneeDescription}}
+            </td>
+            <td>
+                {{task.description}}
+            </td>
+            <td>
+                {{task.completed | completeStatus}}
+            </td>
+            <td class="action">
+                <button (click)="edit(task)"
+                        type="button"
+                        class="btn btn-outline-info btn-sm">Edit</button>
+                <button (click)="complete(task)"
+                        type="button"
+                        class="btn btn-outline-info btn-sm">Complete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>

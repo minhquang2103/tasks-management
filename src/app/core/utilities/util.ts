@@ -1,4 +1,9 @@
 import { types } from "util";
+import { ViewContainerRef } from "@angular/core";
+
+export class WindowContainer {
+    public static container: ViewContainerRef = null;
+}
 
 export const isArray = (object: any): object is any[] => {
     return Array.isArray(object)
@@ -18,10 +23,6 @@ export const isError = (object: any): object is Error => {
 
 export const isBoolean = (object: any): object is boolean => {
     return typeof object === 'boolean'
-};
-
-export const isBuffer = (object: any): object is Buffer => {
-    return Buffer.isBuffer(object)
 };
 
 export const isFunction = (object: any): boolean => {
@@ -59,3 +60,4 @@ export const isSymbol = (object: any): object is symbol => {
 export const isUndefined = (object: any): object is undefined => {
     return object === undefined
 };
+ 

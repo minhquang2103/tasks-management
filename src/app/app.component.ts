@@ -1,14 +1,18 @@
-import { Component } from '@angular/core';
-import {BackendService} from './backend.service';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { WindowContainer } from './core/utilities/util';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  tasks = this.backend.tasks();
-  users = this.backend.users();
+export class AppComponent implements OnInit {
+  @ViewChild('container', { static: true, read: ViewContainerRef }) container: ViewContainerRef;
+  
+  constructor() {
 
-  constructor(private backend: BackendService) {}
+  }
+  ngOnInit() {
+    WindowContainer.container = this.container;
+  }
 }

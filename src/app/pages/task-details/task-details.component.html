@@ -1,0 +1,64 @@
+<form #form
+      (ngSubmit)="save(form)">
+    <div class="mb-3">
+        <label for="id"
+               class="form-label">Id</label>
+        <input [disabled]="true"
+               [(ngModel)]="dataSource.id"
+               #id="ngModel"
+               name="id"
+               type="text"
+               class="form-control"
+               id="id">
+    </div>
+
+    <div class="mb-3">
+        <label for="completed"
+               class="form-label">Completed</label>
+        <div>
+            {{dataSource.completed | completeStatus}}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="assigneeId"
+               class="form-label">Assigned To</label>
+        <div>
+            <select [(ngModel)]="dataSource.assigneeId"
+                    #assigneeId="ngModel"
+                    name="assigneeId"
+                    class="form-select">
+                <ng-container *ngFor="let data of users$ | async">
+                    <option [value]="data.id">
+                        {{data.name}}
+                    </option>
+                </ng-container>
+
+            </select>
+
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="description"
+               class="form-label">Description</label>
+        <textarea [(ngModel)]="dataSource.description"
+                  [ngClass]="{'is-invalid': description.errors?.required && (description.dirty || description.touched || isSubmitted)}"
+                  [required]="true"
+                  #description="ngModel"
+                  name="description"
+                  class="form-control"
+                  id="description"
+                  rows="3"></textarea>
+    </div>
+
+    <div class="btn-group"
+         role="group"
+         aria-label="Action Buttons">
+        <button (click)="back()"
+                type="button"
+                class="btn btn-outline-info btn-sm">Back To List</button>
+        <button type="submit"
+                class="btn btn-info btn-sm">Update</button>
+    </div>
+</form>

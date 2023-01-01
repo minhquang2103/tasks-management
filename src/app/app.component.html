@@ -1,8 +1,14 @@
-<h2>Tasks</h2>
+<div class="wrapper">
+    <app-header>
 
-<ul>
-  <li *ngFor="let t of tasks|async">
-    Task: {{t.id}}, {{t.description}}
-  </li>
-</ul>
+    </app-header>
+    <div class="content">
+        <router-outlet>
 
+        </router-outlet>
+    </div>
+
+    <div #container
+         class="popup">
+    </div>
+</div>
